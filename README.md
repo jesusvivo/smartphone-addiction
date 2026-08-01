@@ -44,6 +44,7 @@ CV is 5-fold `StratifiedKFold` pooled out-of-fold ROC AUC. Public LB is the Kagg
 | 5 | 5-fold CV harness in the notebook | | | no model change |
 | 6 | Optuna hyperparameter search, 40 trials | 0.96532 | **0.96668** | **kept, +0.01084 on LB** |
 | 7 | `is_unbalance=True` on tuned params | 0.96516 | | null, reverted |
+| 8 | lr 0.02 with 4800 trees | 0.96553 | | null, reverted |
 
 ### 1. Baseline
 
@@ -123,5 +124,11 @@ Confirmed on the leaderboard at **0.96668**, up 0.01084 from the baseline's 0.95
 The target is 490,474 positive to 200,895 negative, so `is_unbalance=True` was worth one run on top of the tuned params. Pooled OOF 0.96516 against 0.96532, a change of -0.00016 at a fold std of 0.00051. Reverted.
 
 Expected, for three reasons. ROC AUC depends only on the ranking of scores, and reweighting mostly rescales them. LightGBM already puts the base rate in the intercept, visible in the training log as `pavg=0.709424 -> initscore=0.892590`. And 2.4:1 is mild enough that both classes carry plenty of gradient. Reweighting earns its keep on threshold metrics like F1, or at ratios closer to 99:1.
+
+### 8. Lower learning rate (null)
+
+The search fixed `learning_rate` at 0.05, so dropping to 0.02 with the tree count scaled up to 4800 was worth one run. Pooled OOF 0.96553 against 0.96532, so +0.00021 for roughly 2.5x the training time. Below the 0.0015 threshold by a factor of seven, and well inside the 0.00052 fold std. Kept lr 0.05.
+
+This is the usual shape of learning-rate tuning once a model is already trained to convergence: the first move from 0.1 to 0.05 with enough trees was worth 0.010, and the next halving was worth 0.0002.
 
 
