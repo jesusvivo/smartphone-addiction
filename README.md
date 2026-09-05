@@ -2,6 +2,12 @@
 
 [Kaggle Playground Series S6E8](https://www.kaggle.com/competitions/playground-series-s6e8/overview). Binary classification, evaluated on ROC AUC.
 
+## Result
+
+Final private leaderboard **0.96643**, placing **1320 of 3532** (top 37%).
+
+Public 0.96668, private 0.96643, a drop of 0.00025. Essentially no shakeup, which is what you would expect here: the model was never selected against the public leaderboard. Every keep/revert decision came from 5-fold OOF, and the leaderboard was only ever used to confirm a decision already made.
+
 ## Data
 
 | | rows | cols |
@@ -45,6 +51,8 @@ CV is 5-fold `StratifiedKFold` pooled out-of-fold ROC AUC. Public LB is the Kagg
 | 6 | Optuna hyperparameter search, 40 trials | 0.96532 | **0.96668** | **kept, +0.01084 on LB** |
 | 7 | `is_unbalance=True` on tuned params | 0.96516 | | null, reverted |
 | 8 | lr 0.02 with 4800 trees | 0.96553 | | null, reverted |
+
+Final submission was iteration 6: public 0.96668, private **0.96643**.
 
 ### 1. Baseline
 
